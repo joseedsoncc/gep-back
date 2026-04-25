@@ -37,7 +37,7 @@ public class EscalaPlantao implements Serializable {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = LAZY, optional = false) //aqui o profissional nao pode ser nulo, por isso o uso do optional = false
+    @ManyToOne(fetch = LAZY, optional = false)
     @JoinColumn(name = "profissional_id", nullable = false)
     private Profissional profissional;
 
