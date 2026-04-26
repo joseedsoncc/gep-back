@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static java.util.Objects.isNull;
 
 @Service
 @AllArgsConstructor
@@ -40,16 +40,40 @@ public class ProfissionalServiceImpl implements ProfissionalService {
     }
 
     @Override
-    public List<ProfissionalDTO> listar(CategoriaEnum categoria) {
+    public ProfissionalDTO editar(Long id, ProfissionalDTO dto) {
+        Profissional profissional = buscarPorIdOuThrowException(id);
+        Profissional profissionalEditado = repository.save(atualizarDadosProfissional(profissional, dto));
+        return converterParaDTO(profissionalEditado);
+    }
+
+    @Override
+    public void excluirPorId(Long id) {
+        if (isNull(id)) {
+            throw new NegocioException("Id não informado!");
+        }
+        this.repository.deleteById(id);
+    }
+
+    @Override
+    public List<ProfissionalDTO> listar(String categoria) {
         List<Profissional> profissionais;
         if (nonNull(categoria)) {
-            profissionais = repository.findByCategoria(categoria);
+            profissionais = repository.findByCategoria(CategoriaEnum.valueOf(categoria));
         } else {
             profissionais = repository.findAll();
         }
         return profissionais.stream()
                 .map(this::converterParaDTO)
                 .collect(Collectors.toList());
+    }
+
+    public ProfissionalDTO buscarPorId(Long id) {
+        Profissional profissional = buscarPorIdOuThrowException(id);
+        return converterParaDTO(profissional);
+    }
+
+    private Profissional buscarPorIdOuThrowException(Long id) {
+        return repository.findById(id).orElseThrow(() -> new NegocioException("Profissional não encontrado"));
     }
 
     private ProfissionalDTO converterParaDTO(Profissional profissional) {
@@ -60,6 +84,14 @@ public class ProfissionalServiceImpl implements ProfissionalService {
         dto.setCategoria(profissional.getCategoria());
         dto.setCargaHorariaSemanal(profissional.getCargaHorariaSemanal());
         return dto;
+    }
+
+    private Profissional atualizarDadosProfissional(Profissional profissional, ProfissionalDTO dto) {
+        profissional.setNome(dto.getNome());
+        profissional.setRegistro(dto.getRegistro());
+        profissional.setCategoria(dto.getCategoria());
+        profissional.setCargaHorariaSemanal(dto.getCargaHorariaSemanal());
+        return profissional;
     }
 
 }
