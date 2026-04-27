@@ -49,7 +49,7 @@ public class Profissional implements Serializable {
     @Column(name = "carga_horaria_semanal", nullable = false)
     private int cargaHorariaSemanal;
 
-    @OneToMany(mappedBy = "profissional", cascade = ALL) //, fetch = LAZY)
+    @OneToMany(mappedBy = "profissional", cascade = ALL)
     private List<EscalaPlantao> plantoes;
 
 }
