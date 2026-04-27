@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.http.ResponseEntity.noContent;
+import static org.springframework.http.ResponseEntity.status;
 
 @RestController
 @RequestMapping("/gep-back/escala")
@@ -32,20 +35,20 @@ public class EscalaPlantaoController {
     @PostMapping("/plantao")
     public ResponseEntity<EscalaPlantaoDTO> cadastrarPlantao(@Valid @RequestBody EscalaPlantaoDTO dto) {
         EscalaPlantaoDTO plantao = service.cadastrarPlantao(dto);
-        return ResponseEntity.status(CREATED).body(plantao);
+        return status(CREATED).body(plantao);
     }
 
     @DeleteMapping("/plantao/{id}")
     public ResponseEntity<Void> excluirPlantao(@PathVariable Long id) {
         service.excluirPlantao(id);
-        return ResponseEntity.noContent().build();
+        return noContent().build();
     }
 
     @GetMapping("/semanal")
     public ResponseEntity<EscalaSemanalDTO> obterEscalaSemanal(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicial) {
         EscalaSemanalDTO escala = service.obterEscalaSemanal(dataInicial);
-        return ResponseEntity.ok(escala);
+        return ok(escala);
     }
 
 }
